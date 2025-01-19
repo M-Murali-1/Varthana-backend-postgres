@@ -2,7 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const db = require("./app/models/index");
 const authRoutes = require("./app/routes/auth.routes");
-//console.log(db);
+const employee = require("./app/routes/employee.routes");
 
 const PORT = process.env.PORT || 8081;
 console.log(PORT);
@@ -17,8 +17,11 @@ db.sequelize
 //Using the middleware
 app.use(express.json());
 
-//Defining the routes
+//Defining the routes for the authentication
 app.use("/auth",authRoutes);
+// Routes for the CRUD Operations.
+app.use("/employee",employee);
+
 // Listening the port
 app.listen(PORT, () => {
   console.log("The port ins running in ", PORT);
