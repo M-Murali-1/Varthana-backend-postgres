@@ -9,7 +9,7 @@ exports.findAll = (req, res) => {
     .findAll({ where: { id: { [Op.not]: req.user.id } } })
     .then((result) => {
       data = result.map((employee) => employee.dataValues);
-      res.status(200).json(data);
+      res.status(200).json({ loginEmployee: req.user, otherEmployees: data });
     })
     .catch((err) =>
       res.status(500).json({ message: "Error while fetching the data" })
@@ -18,7 +18,6 @@ exports.findAll = (req, res) => {
 
 // Updating the user details.
 exports.updateOne = (req, res) => {
- 
   // If the body contains no data then sending the error.
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({ message: "No body found..!" });
@@ -42,9 +41,8 @@ exports.updateOne = (req, res) => {
   });
 };
 
-// Deleting the user 
+// Deleting the user
 exports.deleteOne = (req, res) => {
-
   //Logic for deleting the user.
   employees.destroy({ where: { id: req.params.id } }).then((num) => {
     if (num) {
@@ -55,4 +53,57 @@ exports.deleteOne = (req, res) => {
       res.status(400).json({ message: "The user with the id not found" });
     }
   });
+};
+
+exports.createOne = (req, res) => {
+  console.log("the data we got from the create :", req.body);
+  if (req.body.confirm_password) {
+    delete req.body.confirm_password;
+  }
+  employees
+    .create(req.body)
+    .then((result) => {
+      if (result) {
+        res.status(200).json({
+          message: `Employee - ${req.body.name} created with id-${result.dataValues.id}`,
+          id: result.dataValues.id,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error Occured while creating the user tyr again..!",
+      });
+    });
+};
+
+exports.findOne = (req, res, next) => {
+  console.log("the response got here is :", req.body);
+  employees
+    .findAll({
+      where: {
+        [Op.and]: [
+          { name: req.body.name },
+          { phone_number: req.body.phone_number },
+          { email_id: req.body.email_id },
+        ],
+      },
+    })
+    .then((result) => {
+      console.log("Hello the data is :", !result);
+
+      if (result.length != 0) {
+        console.log("The employee details are :", result[0].dataValues.id);
+        return res
+          .status(200)
+          .json({ message: "Employee Found..!", id: result[0].dataValues.id });
+      } else {
+        return res.status(400).json({ message: "No Employee Found ..!" });
+        console.log("No employee find with the given details");
+      }
+    })
+    .catch((err) => {
+      return res.status(400).json({message:"Error while fetching..!"})
+      console.log("there is an error while retriving the data", err.message);
+    });
 };
