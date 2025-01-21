@@ -3,6 +3,7 @@ const dotenv = require("dotenv").config();
 const db = require("./app/models/index");
 const authRoutes = require("./app/routes/auth.routes");
 const employee = require("./app/routes/employee.routes");
+const cors = require("cors");
 
 const PORT = process.env.PORT || 8081;
 console.log(PORT);
@@ -15,12 +16,13 @@ db.sequelize
   .catch((err) => console.log("Error while Syncing the Database"));
 
 //Using the middleware
+app.use(cors());
 app.use(express.json());
 
 //Defining the routes for the authentication
-app.use("/auth",authRoutes);
+app.use("/auth", authRoutes);
 // Routes for the CRUD Operations.
-app.use("/employee",employee);
+app.use("/employee", employee);
 
 // Listening the port
 app.listen(PORT, () => {
