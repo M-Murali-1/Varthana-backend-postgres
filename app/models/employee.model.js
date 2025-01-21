@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       unique: true,
     },
     phone_number: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.BIGINT,
       allowNull: false,
       unique: true,
     },
