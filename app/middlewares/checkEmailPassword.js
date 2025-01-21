@@ -14,13 +14,16 @@ exports.checkPhNoExists = (req, res, next) => {
   employees
     .findOne({ where: { phone_number: req.body.phone_number } })
     .then((data) => {
+      // If the req.params has the ID in Updating Purpose the phonenumber can be the same.
       if (req.params.id) {
         if (!data || data.dataValues.id == req.params.id) {
           return next();
         } else {
           return res.status(400).json(phNoError);
         }
-      } else {
+      }
+      // This is used when creating the user for the first time here the mobile number should not be present already.
+      else {
         if (data) {
           return res.status(400).json(phNoError);
         } else {
@@ -33,19 +36,21 @@ exports.checkPhNoExists = (req, res, next) => {
     });
 };
 
+// Logic for the purpose of checking the emailid exists already.
 exports.checkEmailExists = (req, res, next) => {
-    console.log("the data came here");
-    
   employees
     .findOne({ where: { email_id: req.body.email_id } })
     .then((data) => {
+      // For the updating purpose verification.
       if (req.params.id) {
         if (!data || data.dataValues.id == req.params.id) {
           return next();
         } else {
           return res.status(500).json(emailError);
         }
-      } else {
+      }
+      // For newly inserting purpose.
+      else {
         if (data) {
           return res.status(500).json(emailError);
         } else {

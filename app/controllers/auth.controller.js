@@ -7,10 +7,14 @@ const secret_key = process.env.JWT_SECRET;
 
 // Registering the user and storing the dat in the database.
 exports.register = (req, res) => {
+  //Hashing the password.
   req.body.password = bcrypt.hashSync(req.body.password, 8);
+
+  //If there is the confirm_passwod in the response then removing it.
   if (req.body.confirm_password) {
     delete req.body.confirm_password;
   }
+
   // After registering successfullt then genereating the token
   employees
     .create(req.body)
@@ -29,12 +33,15 @@ exports.register = (req, res) => {
         .json({ message: "Error while Registering..!", error: err.message })
     );
 };
+
+// Logic for the user login.
 exports.login = (req, res) => {
   employees.findOne({ where: { email_id: req.body.email_id } }).then((user) => {
     //If no user found
     if (!user) {
       return res.status(404).json({ message: "User not found..!" });
     }
+    // Comparing the password with the hashed password.
     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
 
     //If password didn't Matches

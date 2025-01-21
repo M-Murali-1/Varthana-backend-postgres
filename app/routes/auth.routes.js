@@ -5,8 +5,10 @@ const {
   checkEmailExists,
   checkPhNoExists,
 } = require("../middlewares/checkEmailPassword");
-// Routes for the login and the register.
+
+// Route for the register purpose.
 router.post("/register", checkEmailExists, checkPhNoExists, register);
+// Route for the login purpose.
 router.post("/login", login);
 
 module.exports = router;

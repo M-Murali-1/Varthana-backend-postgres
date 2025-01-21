@@ -22,6 +22,9 @@ exports.updateOne = (req, res) => {
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({ message: "No body found..!" });
   }
+  if (req.body.confirm_password) {
+    delete req.body.confirm_password;
+  }
 
   // If we wanted to update the password then hashing the password.
   if (req.body.password) {
@@ -56,7 +59,7 @@ exports.deleteOne = (req, res) => {
 };
 
 exports.createOne = (req, res) => {
-  console.log("the data we got from the create :", req.body);
+ 
   if (req.body.confirm_password) {
     delete req.body.confirm_password;
   }
@@ -78,7 +81,6 @@ exports.createOne = (req, res) => {
 };
 
 exports.findOne = (req, res, next) => {
-  console.log("the response got here is :", req.body);
   employees
     .findAll({
       where: {
@@ -90,20 +92,15 @@ exports.findOne = (req, res, next) => {
       },
     })
     .then((result) => {
-      console.log("Hello the data is :", !result);
-
-      if (result.length != 0) {
-        console.log("The employee details are :", result[0].dataValues.id);
+     if (result.length != 0) {
         return res
           .status(200)
           .json({ message: "Employee Found..!", id: result[0].dataValues.id });
       } else {
         return res.status(400).json({ message: "No Employee Found ..!" });
-        console.log("No employee find with the given details");
-      }
+        }
     })
     .catch((err) => {
       return res.status(400).json({message:"Error while fetching..!"})
-      console.log("there is an error while retriving the data", err.message);
-    });
+      });
 };
