@@ -32,7 +32,7 @@ exports.checkPhNoExists = (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: "Error while validating..!" });
+      res.status(500).json({ error: "Error while validating..!",message:err });
     });
 };
 
@@ -46,19 +46,19 @@ exports.checkEmailExists = (req, res, next) => {
         if (!data || data.dataValues.id == req.params.id) {
           return next();
         } else {
-          return res.status(500).json(emailError);
+          return res.status(400).json(emailError);
         }
       }
       // For newly inserting purpose.
       else {
         if (data) {
-          return res.status(500).json(emailError);
+          return res.status(400).json(emailError);
         } else {
           return next();
         }
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: "Error while validating..!" });
+      res.status(500).json({ error: "Error while validating..!",message:err });
     });
 };

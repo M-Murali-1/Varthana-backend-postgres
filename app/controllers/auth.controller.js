@@ -14,17 +14,14 @@ exports.register = (req, res) => {
   if (req.body.confirm_password) {
     delete req.body.confirm_password;
   }
+  console.log(req.body);
 
   // After registering successfullt then genereating the token
   employees
     .create(req.body)
     .then((result) => {
-      const token = jwt.sign(result.dataValues, secret_key, {
-        expiresIn: "2h",
-      });
       res.status(200).json({
         message: `User ${req.body.name} is registered..!`,
-        token: token,
       });
     })
     .catch((err) =>
@@ -36,13 +33,26 @@ exports.register = (req, res) => {
 
 // Logic for the user login.
 exports.login = (req, res) => {
+
+  //Logic if the email id and the password are not sent by the user.
+  if(!req.body?.email_id) {
+    return res.status(400).json({message:"Email id is required..!"});
+  }
+  else if(!req.body?.password) {
+    return res.status(400).json({message:"Passwod is required..!"})
+  }
+
+  // Logic for finding the user based on the email id and checking with the password..!
   employees.findOne({ where: { email_id: req.body.email_id } }).then((user) => {
+    
     //If no user found
     if (!user) {
       return res.status(404).json({ message: "User not found..!" });
     }
+
     // Comparing the password with the hashed password.
     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
+    console.log("the password matched or not here is :", passwordMatch);
 
     //If password didn't Matches
     if (!passwordMatch) {

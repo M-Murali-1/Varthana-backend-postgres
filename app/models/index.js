@@ -6,9 +6,8 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   logging: false,
 });
 
-
-const db ={};
+const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-db.employees = require("./employee.model")(sequelize,Sequelize);
+db.employees = require("./employee.model")(sequelize, Sequelize);
 module.exports = db;
