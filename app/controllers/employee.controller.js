@@ -47,7 +47,7 @@ exports.updateOne = (req, res, next) => {
       if (num == 1) {
         console.log(num, req.body);
         return res.status(200).json({
-          message: `The user with the id-${req.params.id} is deleted successfully..!`,
+          message: `The user with the id-${req.params.id} is updated successfully..!`,
         });
       } else {
         return res
@@ -141,7 +141,7 @@ exports.findById = (req, res) => {
     .then((response) => {
       console.log(response.dataValues, "this is the data");
       res.status(200).json({
-        message: `The user with the id-${req.params.id} is deleted successfully..!`,
+        message: `The user with the id-${req.params.id} is found..!`,
         Data: response.dataValues,
       });
     })

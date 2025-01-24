@@ -6,7 +6,8 @@ const validateEmployeeInsertionSchema = yup
     name: yup.string().required("Name is required..!"),
     username: yup.string().required("Username is required..!"),
     phone_number: yup
-      .number()
+      //   .number()
+      .string()
       .required("Phone number is required..!")
       .typeError("Phone number must be number")
       .test(
@@ -21,7 +22,7 @@ const validateEmployeeInsertionSchema = yup
     password: yup
       .string()
       .required("Password is required..!")
-      .min(8, "Password must be at least 8 characters long..!"),
+      .min(6, "Password must be at least 6 characters long..!"),
     confirm_password: yup
       .string()
       .required("Confirm_password is require..!")
@@ -57,7 +58,7 @@ const validateEmployeeLoginSchema = yup
     password: yup
       .string()
       .required("Password is required..!")
-      .min(8, "Password must be at least 8 characters long..!"),
+      .min(6, "Password must be at least 6 characters long..!"),
   })
   .noUnknown(true, "Invalid data is provided in the request");
 
@@ -82,7 +83,8 @@ const validateEmployeeFindSchema = yup
   .object({
     name: yup.string().required("Name is required..!"),
     phone_number: yup
-      .number()
+      //   .number()
+      .string()
       .required("Phone number is required..!")
       .typeError("Phone number must be number")
       .test(
@@ -101,7 +103,6 @@ const validateEmployeeFind = async (req, res, next) => {
   try {
     req.body = await validateEmployeeFindSchema.validate(req.body, {
       abortEarly: false,
-      strict: true,
     });
     console.log(req.body);
     next();
@@ -119,7 +120,7 @@ const validateEmployeePasswordUpdateSchema = yup
     password: yup
       .string()
       .required("Password is required..!")
-      .min(8, "Password must be at least 8 characters long..!"),
+      .min(6, "Password must be at least 6 characters long..!"),
     confirm_password: yup
       .string()
       .required("Confirm_password is require..!")
