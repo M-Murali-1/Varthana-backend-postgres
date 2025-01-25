@@ -81,7 +81,7 @@ const validateEmployeeLogin = async (req, res, next) => {
 // Schema for finding the employee validations
 const validateEmployeeFindSchema = yup
   .object({
-    name: yup.string().required("Name is required..!"),
+    username: yup.string().required("Name is required..!"),
     phone_number: yup
       //   .number()
       .string()

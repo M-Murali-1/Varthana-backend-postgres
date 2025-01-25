@@ -2,6 +2,7 @@ const { verifyToken } = require("../middlewares/authJwt");
 const {
   checkEmailExists,
   checkPhNoExists,
+  checkUsernameExists,
 } = require("../middlewares/checkEmailPassword");
 const express = require("express");
 const router = express.Router();
@@ -22,6 +23,7 @@ router.get("/getall", verifyToken, findAll);
 router.patch(
   "/update/:id",
   verifyToken,
+  checkUsernameExists,
   checkEmailExists,
   checkPhNoExists,
   updateOne,
@@ -36,6 +38,7 @@ router.post(
   "/create",
   verifyToken,
   validation.validateEmployeeInsertion,
+  checkUsernameExists,
   checkEmailExists,
   checkPhNoExists,
   createOne

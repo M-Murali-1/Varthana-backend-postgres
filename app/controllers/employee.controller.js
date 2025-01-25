@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 
 // Finding all the user data except the login user.
 exports.findAll = (req, res) => {
+  console.log("inside of the findall");
+  
   employees
     .findAll()
     .then((result) => {
@@ -112,7 +114,7 @@ exports.findOne = (req, res, next) => {
     .findAll({
       where: {
         [Op.and]: [
-          { name: req.body.name },
+          { username: req.body.username },
           { phone_number: req.body.phone_number },
           { email_id: req.body.email_id },
         ],

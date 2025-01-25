@@ -9,6 +9,10 @@ exports.verifyToken= (req,res,next)=>{
     if(!token) {
       return  res.status(403).json({message:"No token Found...!"})
     }
+    else if (!token.startsWith("Bearer")) {
+        return res.status(401).json({ message: "Invalid token format..!" });
+    }
+    token = token.split(" ")[1];
     jwt.verify(token,secret_key,(err,decoded)=>{
         
         // If the token is invalid..!
