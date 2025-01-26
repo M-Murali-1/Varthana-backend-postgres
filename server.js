@@ -1,10 +1,10 @@
 const express = require("express");
 const db = require("./app/models/index");
-const authRoutes = require("./app/routes/auth.routes");
-const employee = require("./app/routes/employee.routes");
+const dotenv = require("dotenv").config();
 const cors = require("cors");
 const PORT = process.env.PORT || 8081;
 const app = express();
+const api = require("./app/routes/index");
 
 //Running the Database for the table creation
 db.sequelize
@@ -16,11 +16,7 @@ db.sequelize
 app.use(cors());
 app.use(express.json());
 
-//Defining the routes for the authentication for the employees.
-app.use("/auth", authRoutes);
-
-// Routes for the CRUD Operations on employees
-app.use("/employee", employee);
+app.use("/api",api);
 
 // Listening the port
 app.listen(PORT, () => {
