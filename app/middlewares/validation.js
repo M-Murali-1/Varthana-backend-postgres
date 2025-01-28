@@ -28,7 +28,25 @@ const validateEmployeeInsertionSchema = yup
       .required("Confirm_password is require..!")
       .oneOf([yup.ref("password"), null], "Password is not matching..!"),
     Role: yup.string().required("Role is required..!"),
-    address: yup.string().optional(),
+    address: yup
+      .object({
+        doorno: yup
+          .string()
+          .optional()
+          .typeError("Door no should be in the string format..!"),
+        street: yup
+          .string()
+          .optional()
+          .typeError("Street should be in the string format..!"),
+        city: yup
+          .string()
+          .optional()
+          .typeError("City should be in the string format..!"),
+      })
+      .optional()
+      .typeError(
+        "Address should be an object with doorno,street,city properties..!"
+      ),
   })
   .noUnknown(true, "Invalid data is provided in the request");
 
@@ -36,7 +54,7 @@ const validateEmployeeInsertion = async (req, res, next) => {
   try {
     req.body = await validateEmployeeInsertionSchema.validate(req.body, {
       abortEarly: false,
-      strict: true,
+      
     });
     console.log(req.body);
     next();
