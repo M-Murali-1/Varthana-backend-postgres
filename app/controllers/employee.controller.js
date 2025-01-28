@@ -2,14 +2,13 @@ const employeeService = require("../services/employee.services");
 
 // Finding all the user data except the login user.
 exports.findAllEmployees = async (req, res) => {
-  console.log("inside of the findall");
-  console.log(req.user);
-
   try {
     const userData = await employeeService.findAllEmployees(req.user.id);
     res.status(200).json(userData);
   } catch (err) {
-    res.status(500).json({ message: "Error while fetching the data" });
+    res
+      .status(500)
+      .json({ message: "Error while fetching the data", error: err });
   }
 };
 
@@ -30,15 +29,14 @@ exports.updateEmployee = async (req, res) => {
 
 // Deleting the user
 exports.deleteEmployee = async (req, res) => {
-  console.log(req?.params);
-  try {
+ try {
+  
     const response = await employeeService.deleteEmployee(req.params.id);
     return res.status(200).json(response);
   } catch (err) {
-    console.log("the error is :", err.message);
     return res.status(404).json({ message: err.message });
   }
-};
+};  
 
 exports.createEmployee = async (req, res) => {
   try {

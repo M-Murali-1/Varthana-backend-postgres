@@ -30,13 +30,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      address: {
-        type: Sequelize.JSON,
-        allowNull: true,
-      },
+      
     },
     {
-      tableName: "employee_details_updated",
+      tableName: "employee_details_address_managment",
     }
   );
   return Employee;

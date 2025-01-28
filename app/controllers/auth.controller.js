@@ -7,6 +7,7 @@ const authService = require("../services/auth.services");
 
 // Registering the user and storing the dat in the database.
 exports.registerEmployee = async (req, res) => {
+  
   // After registering successfullt then genereating the token
   try {
     const response = await authService.registerEmployee(req.body);

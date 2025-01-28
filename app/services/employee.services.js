@@ -1,16 +1,21 @@
 const db = require("../models/index");
 const employees = db.employees;
+const address = db.address;
 const { Op } = db.Sequelize;
 const bcrypt = require("bcryptjs");
 
 exports.findAllEmployees = async (id) => {
-  console.log("inside of the findalleffffmplouye");
+  const response = await employees.findAll({
+    include: [
+      {
+        model: address,
+        as: "address",
+        required: false,
+      },
+    ],
+  });
 
-  const response = await employees.findAll();
-
-  console.log("the response is :", response, "the data");
   const userInfo = response.map((employee) => employee.dataValues);
-  console.log("the user info here is :", userInfo, "this is the userinfo");
 
   const [loginEmployee] = userInfo.filter((element) => element.id == id);
   const otherEmployees = userInfo.filter((element) => element.id != id);
@@ -30,11 +35,20 @@ exports.updateEmployee = async (userData, id) => {
   if (userData.password) {
     userData.password = bcrypt.hashSync(userData.password, 8);
   }
+  const addressData = userData.address;
+  delete userData.address;
   const response = await employees.update(userData, {
     where: { id: id },
   });
   if (response == 1) {
-    return `The user with the id-${id} is updated successfully..#`;
+    if (addressData) {
+      addressData.employeeId = id;
+
+      const addressResponse = await address.update(addressData, {
+        where: { employeeId: id },
+      });
+    }
+    return `The user with the id-${id} is updated successfully..`;
   } else {
     throw new Error("No user found with the given id..!");
   }
@@ -57,8 +71,11 @@ exports.createEmployee = async (employee) => {
     delete employee.confirm_password;
   }
   employee.password = bcrypt.hashSync(employee.password, 8);
-
+  const addressData = employee.address;
+  delete employee.address;
   const employeeData = await employees.create(employee);
+  addressData.employeeId = employeeData.dataValues.id;
+  const addressResponse = await address.create(addressData);
   return {
     message: `Employee - ${employee.name} created with id-${employeeData.dataValues.id}`,
     id: employeeData.dataValues.id,

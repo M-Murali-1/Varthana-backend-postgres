@@ -1,6 +1,7 @@
 const db = require("../models/index");
 const bcrypt = require("bcryptjs");
 const employees = db.employees;
+const address = db.address;
 const jwt = require("jsonwebtoken");
 
 exports.registerEmployee = async (user) => {
@@ -8,13 +9,17 @@ exports.registerEmployee = async (user) => {
   if (user.confirm_password) {
     delete user.confirm_password;
   }
-  const response = await employees.create(user);
-  console.log(response);
 
-  return response;
+  const addressData = user.address;
+  delete user.address;
+
+  const employeeResponse = await employees.create(user);
+  addressData.employeeId = employeeResponse.dataValues.id;
+  const addressResponse = await address.create(addressData);
+  return { employeeResponse, addressResponse };
 };
 
-exports.loginEmployee = async (user,secret_key) => {
+exports.loginEmployee = async (user, secret_key) => {
   // Logic for finding the user based on the email id and checking with the password..!
   const response = await employees.findOne({
     where: { email_id: user.email_id },
@@ -26,11 +31,11 @@ exports.loginEmployee = async (user,secret_key) => {
 
   // Comparing the password with the hashed password.
   const passwordMatch = bcrypt.compareSync(user.password, response.password);
-  
+
   //If password didn't Matches
   if (!passwordMatch) {
     console.log("here is the error");
-    
+
     throw new Error("Invalid Password..!");
   }
 
