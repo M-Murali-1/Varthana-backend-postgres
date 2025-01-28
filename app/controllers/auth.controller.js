@@ -28,6 +28,6 @@ exports.loginEmployee = async (req, res) => {
     res.status(200).json({ message: "Login successful!", token: token });
   } catch (err) {
     console.error("Error during login:", err.message);
-    res.status(400).json({ message: err.message });
+    res.status(err.statusCode||500).json({ message: err.message||"Internal Server Error..!" });
   }
 };

@@ -6,9 +6,7 @@ exports.findAllEmployees = async (req, res) => {
     const userData = await employeeService.findAllEmployees(req.user.id);
     res.status(200).json(userData);
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error while fetching the data", error: err });
+    res.status(500).json({ message: "Error while fetching the data" });
   }
 };
 
@@ -23,20 +21,21 @@ exports.updateEmployee = async (req, res) => {
       message: updatedData,
     });
   } catch (err) {
-    return res.status(404).json({ message: err.message });
+    return res.status(err.statusCode).json({ message: err.message });
   }
 };
 
 // Deleting the user
 exports.deleteEmployee = async (req, res) => {
- try {
-  
-    const response = await employeeService.deleteEmployee(req.params.id);
+  try {
+    const response = await employeeService.deleteEmployee(req?.params?.id);
     return res.status(200).json(response);
   } catch (err) {
-    return res.status(404).json({ message: err.message });
+    return res
+      .status(err.statusCode || 500)
+      .json({ message: err.message || "Error while deleting try again..!" });
   }
-};  
+};
 
 exports.createEmployee = async (req, res) => {
   try {
@@ -44,7 +43,7 @@ exports.createEmployee = async (req, res) => {
     return res.status(200).json(response);
   } catch (err) {
     return res.status(500).json({
-      message: "Error Occured while creating the user try again..!",
+      message: err.message||"Error Occured while creating the user try again..!",
     });
   }
 };
@@ -59,10 +58,8 @@ exports.findEmployeeByDetails = async (req, res) => {
     const userData = await employeeService.findEmployeeByDetails(data);
     return res.status(200).json(userData);
   } catch (err) {
-    if (err.message === "No Employee Found..!") {
-      return res.status(404).json({ message: err.message });
-    } else {
-      return res.status(500).json({ message: err.message });
-    }
+    return res
+      .status(err.statusCode || 500)
+      .json({ message: err.message || "Internal Server Error..!" });
   }
 };

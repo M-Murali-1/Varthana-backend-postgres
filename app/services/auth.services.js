@@ -6,27 +6,21 @@ const jwt = require("jsonwebtoken");
 
 exports.registerEmployee = async (user) => {
   user.password = bcrypt.hashSync(user.password, 8);
-  if (user.confirm_password) {
-    delete user.confirm_password;
-  }
-
-  const addressData = user.address;
-  delete user.address;
-
   const employeeResponse = await employees.create(user);
-  addressData.employeeId = employeeResponse.dataValues.id;
-  const addressResponse = await address.create(addressData);
-  return { employeeResponse, addressResponse };
+  return { employeeResponse };
 };
 
 exports.loginEmployee = async (user, secret_key) => {
   // Logic for finding the user based on the email id and checking with the password..!
   const response = await employees.findOne({
     where: { email_id: user.email_id },
-  });
+    });
+
   //If no user found
   if (!response) {
-    throw new Error("Employee not found..!");
+    const error = new Error("Employee not found!");
+    error.statusCode = 404;
+    throw error;
   }
 
   // Comparing the password with the hashed password.
@@ -34,9 +28,9 @@ exports.loginEmployee = async (user, secret_key) => {
 
   //If password didn't Matches
   if (!passwordMatch) {
-    console.log("here is the error");
-
-    throw new Error("Invalid Password..!");
+    const error = new Error("Invalid Password!");
+    error.statusCode = 401;
+    throw error;
   }
 
   // If the passworrd matches then sending the token.

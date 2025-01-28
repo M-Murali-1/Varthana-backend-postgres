@@ -36,7 +36,7 @@ exports.checkPhNoExists = (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: "Error while validating..!",message:err });
+      res.status(500).json({ error: "Error while validating..!",message:err.message });
     });
 };
 

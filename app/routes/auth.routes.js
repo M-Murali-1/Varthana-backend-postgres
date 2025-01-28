@@ -10,6 +10,7 @@ const {
   checkUsernameExists,
 } = require("../middlewares/checkEmailPassword");
 const validation = require("../middlewares/validation");
+
 // Route for the register purpose.
 router.post(
   "/register",
@@ -19,6 +20,7 @@ router.post(
   validation.validateEmployeeInsertion,
   registerEmployee
 );
+
 // Route for the login purpose.
 router.post("/login", validation.validateEmployeeLogin, loginEmployee);
 
